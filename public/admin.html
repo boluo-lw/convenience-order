@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智谷超市 - 管理后台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .login-title {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #667eea;
+        }
+        
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .login-btn:hover {
+            background: #5568d3;
+        }
+        
+        .admin-container {
+            display: none;
+        }
+        
+        .header {
+            background: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            color: #667eea;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f0f0f0;
+            padding: 10px 20px;
+            gap: 5px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary.tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .notification-badge {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #ef4444;
+            border-radius: 50%;
+            animation: pulse 1s ease-in-out infinite;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.3);
+                opacity: 0.7;
+            }
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: #ed8936;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #dd6b20;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #666;
+        }
+        
+        .filters {
+            background: white;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .filter-group label {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 0 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .orders-container, .products-container {
+            padding: 0 20px 20px;
+        }
+        
+        .order-card, .product-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .product-card {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        
+        .product-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #f0f0f0;
+            flex-shrink: 0;
+        }
+        
+        .product-info {
+            flex: 1;
+        }
+        
+        .product-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .product-category {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+        
+        .product-price {
+            font-size: 18px;
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .order-no {
+            font-size: 14px;
+            color: #999;
+        }
+        
+        .order-time {
+            font-size: 13px;
+            color: #999;
+        }
+        
+        .order-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background: #fef5e7;
+            color: #f39c12;
+        }
+        
+        .status-prepared {
+            background: #e8f5e9;
+            color: #4caf50;
+        }
+        
+        .status-delivering {
+            background: #e3f2fd;
+            color: #2196f3;
+        }
+        
+        .status-completed {
+            background: #f5f5f5;
+            color: #999;
+        }
+        
+        .order-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .info-item {
+            font-size: 14px;
+        }
+        
+        .info-label {
+            color: #999;
+            margin-right: 5px;
+        }
+        
+        .order-items, .product-actions {
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 14px;
+        }
+        
+        .order-total {
+            text-align: right;
+            font-size: 16px;
+            font-weight: 600;
+            color: #ff6b6b;
+            margin-bottom: 15px;
+        }
+        
+        .order-actions, .product-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .status-select {
+            padding: 6px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+        
+        /* 模态框样式 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .image-upload-area {
+            border: 2px dashed #d0d0d0;
+            border-radius: 10px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        
+        .image-upload-area:hover {
+            border-color: #667eea;
+            background: #f5f7ff;
+        }
+        
+        .image-upload-area.dragover {
+            border-color: #667eea;
+            background: #f5f7ff;
+            border-width: 2px;
+        }
+        
+        #upload-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        
+        #upload-text {
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        #upload-hint {
+            font-size: 13px;
+            color: #999;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .upload-progress {
+            margin-top: 10px;
+            text-align: center;
+            color: #667eea;
+            font-size: 14px;
+        }
+        
+        .setting-item {
+            margin-bottom: 20px;
+        }
+        
+        .setting-label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .setting-input-group {
+            display: flex;
+            align-items: center;
+            width: 200px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .input-prefix {
+            padding: 10px 12px;
+            background: #f5f5f5;
+            color: #666;
+            font-size: 14px;
+            border-right: 1px solid #e0e0e0;
+        }
+        
+        .setting-input-group input {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .setting-hint {
+            font-size: 13px;
+            color: #999;
+            margin-top: 8px;
+            margin-bottom: 0;
+        }
+        
+        .qr-upload-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .qr-preview {
+            width: 100px;
+            height: 100px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            background: #fafafa;
+        }
+        
+        .qr-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .qr-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .placeholder-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .btn-sm {
+            padding: 8px 15px;
+            font-size: 13px;
+        }
+        
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .filter-row {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+            
+            .order-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .product-card {
+                flex-direction: column;
+            }
+            
+            .product-image {
+                width: 100%;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录页面 -->
+    <div class="login-container" id="login-page">
+        <div class="login-box">
+            <h2 class="login-title">🏪 智谷超市管理后台</h2>
+            <input type="password" class="login-input" id="password" placeholder="请输入管理员密码">
+            <button class="login-btn" onclick="login()">登录</button>
+        </div>
+    </div>
+    
+    <!-- 管理页面 -->
+    <div class="admin-container" id="admin-page">
+        <div class="header">
+            <h1>🏪 智谷超市管理后台</h1>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="exportOrders()" id="export-btn">📥 导出Excel</button>
+                <button class="btn btn-secondary" onclick="logout()">退出登录</button>
+            </div>
+        </div>
+        
+        <!-- 标签页 -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('orders')">
+                📋 订单管理
+                <span class="notification-badge" id="order-notification-badge" style="display: none;">●</span>
+            </button>
+            <button class="tab" onclick="showTab('products')">🛒 商品管理</button>
+            <button class="tab" onclick="showTab('settings')">⚙️ 系统设置</button>
+        </div>
+        
+        <!-- 订单管理 -->
+        <div id="orders-tab">
+            <div class="filters">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>公司</label>
+                        <select id="filter-company" onchange="loadOrders()">
+                            <option value="all">全部公司</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>订单状态</label>
+                        <select id="filter-status" onchange="loadOrders()">
+                            <option value="all">全部状态</option>
+                            <option value="待备货">待备货</option>
+                            <option value="已备货">已备货</option>
+                            <option value="已配送">已配送</option>
+                            <option value="已完成">已完成</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>开始日期</label>
+                        <input type="date" id="filter-start-date" onchange="loadOrders()">
+                    </div>
+                    <div class="filter-group">
+                        <label>结束日期</label>
+                        <input type="date" id="filter-end-date" onchange="loadOrders()">
+                    </div>
+                    <div class="filter-group">
+                        <button class="btn btn-primary" onclick="loadOrders()">🔍 查询</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats" id="stats-container"></div>
+            
+            <div class="orders-container" id="orders-container">
+                <div class="empty-state">
+                    <div class="empty-icon">📦</div>
+                    <div>暂无订单</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 商品管理 -->
+        <div id="products-tab" style="display: none;">
+            <div class="filters" style="margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <label style="font-size: 14px; color: #666;">商品列表</label>
+                    </div>
+                    <button class="btn btn-success" onclick="openAddProductModal()">➕ 添加商品</button>
+                    <button class="btn btn-info" onclick="openImportModal()">📥 批量导入</button>
+                </div>
+            </div>
+            
+            <div class="products-container" id="products-container">
+                <div class="empty-state">
+                    <div class="empty-icon">📦</div>
+                    <div>暂无商品</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 系统设置 -->
+        <div id="settings-tab" style="display: none;">
+            <div class="filters" style="margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <label style="font-size: 14px; color: #666;">系统设置</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-container" style="background: white; border-radius: 10px; padding: 20px; margin: 20px;">
+                <h3 style="margin-bottom: 20px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 10px;">💰 订单设置</h3>
+                <div class="setting-item">
+                    <label class="setting-label">起送价格（元）</label>
+                    <div class="setting-input-group">
+                        <span class="input-prefix">¥</span>
+                        <input type="number" id="min-order-amount" placeholder="请输入起送价格" min="0" step="0.01">
+                    </div>
+                    <p class="setting-hint">订单金额必须大于或等于此金额才能下单</p>
+                </div>
+                
+                <h3 style="margin-bottom: 20px; margin-top: 30px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 10px;">🏪 店铺信息</h3>
+                <div class="setting-item">
+                    <label class="setting-label">店铺地址</label>
+                    <input type="text" id="shop-address" placeholder="请输入店铺地址" style="width: 300px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px; outline: none;">
+                    <p class="setting-hint">显示在用户端的店铺地址信息</p>
+                </div>
+                
+                <div class="setting-item">
+                    <label class="setting-label">联系方式</label>
+                    <input type="tel" id="shop-phone" placeholder="请输入联系电话" style="width: 200px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px; outline: none;">
+                    <p class="setting-hint">显示在用户端的联系电话</p>
+                </div>
+                
+                <div class="setting-item">
+                    <label class="setting-label">营业时间段</label>
+                    <input type="text" id="business-hours" placeholder="如：09:00 - 21:00" style="width: 200px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px; outline: none;">
+                    <p class="setting-hint">显示在用户端的营业时间</p>
+                </div>
+                
+                <h3 style="margin-bottom: 20px; margin-top: 30px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 10px;">💳 收款二维码</h3>
+                <div class="setting-item">
+                    <label class="setting-label">微信收款二维码</label>
+                    <div class="qr-upload-container">
+                        <div class="qr-preview" id="wechat-qr-preview">
+                            <img id="wechat-qr-image" src="" alt="微信收款码" style="display: none;">
+                            <div class="qr-placeholder" id="wechat-qr-placeholder">
+                                <span class="placeholder-icon">📱</span>
+                                <span>点击上传微信收款码</span>
+                            </div>
+                        </div>
+                        <input type="file" id="wechat-qr-file" accept="image/*" style="display: none;" onchange="handleQRUpload('wechat', this)">
+                        <button class="btn btn-success btn-sm" onclick="document.getElementById('wechat-qr-file').click()">📤 上传二维码</button>
+                        <button class="btn btn-danger btn-sm" onclick="removeQRCode('wechat')" style="display: none;" id="remove-wechat-qr">🗑️ 删除</button>
+                    </div>
+                    <p class="setting-hint">上传微信收款码图片，用户支付时将显示此二维码</p>
+                </div>
+                
+                <div class="setting-item">
+                    <label class="setting-label">支付宝收款二维码</label>
+                    <div class="qr-upload-container">
+                        <div class="qr-preview" id="alipay-qr-preview">
+                            <img id="alipay-qr-image" src="" alt="支付宝收款码" style="display: none;">
+                            <div class="qr-placeholder" id="alipay-qr-placeholder">
+                                <span class="placeholder-icon">🔷</span>
+                                <span>点击上传支付宝收款码</span>
+                            </div>
+                        </div>
+                        <input type="file" id="alipay-qr-file" accept="image/*" style="display: none;" onchange="handleQRUpload('alipay', this)">
+                        <button class="btn btn-success btn-sm" onclick="document.getElementById('alipay-qr-file').click()">📤 上传二维码</button>
+                        <button class="btn btn-danger btn-sm" onclick="removeQRCode('alipay')" style="display: none;" id="remove-alipay-qr">🗑️ 删除</button>
+                    </div>
+                    <p class="setting-hint">上传支付宝收款码图片，用户支付时将显示此二维码</p>
+                </div>
+                
+                <h3 style="margin-bottom: 20px; margin-top: 30px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 10px;">🔐 修改密码</h3>
+                <div class="setting-item">
+                    <label class="setting-label">旧密码</label>
+                    <input type="password" id="old-password" placeholder="请输入旧密码" style="width: 200px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px; outline: none;">
+                </div>
+                
+                <div class="setting-item">
+                    <label class="setting-label">新密码</label>
+                    <input type="password" id="new-password" placeholder="请输入新密码（至少6位）" style="width: 200px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px; outline: none;">
+                    <p class="setting-hint">新密码长度不能少于6位</p>
+                </div>
+                
+                <div class="setting-item">
+                    <label class="setting-label">确认新密码</label>
+                    <input type="password" id="confirm-password" placeholder="请再次输入新密码" style="width: 200px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px; outline: none;">
+                </div>
+                
+                <button class="btn btn-warning" style="margin-top: 10px;" onclick="changePassword()">🔄 修改密码</button>
+                <button class="btn btn-primary" style="margin-top: 20px;" onclick="saveSettings()">💾 保存设置</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 添加/编辑商品弹窗 -->
+    <div class="modal-overlay" id="product-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="modal-title">添加商品</div>
+                <button class="modal-close" onclick="closeProductModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="product-form">
+                    <input type="hidden" id="product-id">
+                    <div class="form-group">
+                        <label>商品名称 *</label>
+                        <input type="text" id="product-name" placeholder="请输入商品名称" required>
+                    </div>
+                    <div class="form-group">
+                        <label>商品价格 *</label>
+                        <input type="number" id="product-price" placeholder="请输入商品价格" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>商品分类</label>
+                        <select id="product-category">
+                            <option value="水果">水果</option>
+                            <option value="饮料">饮料</option>
+                            <option value="零食">零食</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>商品图片</label>
+                        <input type="hidden" id="product-image-url">
+                        <div class="image-upload-area" id="image-upload-area" onclick="document.getElementById('product-image-file').click()">
+                            <div id="upload-icon">📷</div>
+                            <div id="upload-text">点击选择图片或拖拽图片到这里</div>
+                            <div id="upload-hint">支持 jpg、png 格式，最大2MB</div>
+                        </div>
+                        <input type="file" id="product-image-file" accept="image/jpeg,image/png" capture="environment" style="display: none;" onchange="handleFileSelect(this)">
+                        <img id="preview-image" class="preview-image" style="display: none;">
+                        <button type="button" id="remove-image-btn" class="btn btn-secondary" style="display: none; margin-top: 10px;" onclick="removeImage()">移除图片</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeProductModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveProduct()">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Excel导入商品弹窗 -->
+    <div class="modal-overlay" id="import-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">📥 批量导入商品</div>
+                <button class="modal-close" onclick="closeImportModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 20px;">
+                    <h4>📋 导入说明</h4>
+                    <ul style="margin: 10px 0; padding-left: 20px; color: #666; font-size: 14px;">
+                        <li>请下载Excel模板，按照模板格式填写商品信息</li>
+                        <li>支持 .xlsx 和 .xls 格式</li>
+                        <li>商品名称和价格为必填项</li>
+                        <li>导入前请确保商品名称唯一</li>
+                    </ul>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <button class="btn btn-secondary" onclick="downloadTemplate()">📥 下载模板</button>
+                </div>
+                
+                <div class="image-upload-area" id="excel-upload-area" onclick="document.getElementById('excel-file').click()" style="height: 150px;">
+                    <div id="excel-upload-icon">📊</div>
+                    <div id="excel-upload-text">点击选择Excel文件或拖拽到这里</div>
+                    <div id="excel-upload-hint">支持 .xlsx 和 .xls 格式</div>
+                </div>
+                <input type="file" id="excel-file" accept=".xlsx,.xls" style="display: none;" onchange="handleExcelUpload(this)">
+                
+                <div id="import-result" style="margin-top: 20px; display: none;">
+                    <div id="import-success" style="color: green; font-weight: bold;"></div>
+                    <div id="import-error" style="color: red; margin-top: 10px;"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeImportModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let isLoggedIn = false;
+        let companies = [];
+        let products = [];
+        let editingProductId = null;
+        
+        // 页面加载时检查登录状态
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLogin();
+            loadCompanies();
+            loadProducts();
+            
+            // 回车登录
+            document.getElementById('password').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
+            
+            // 拖拽上传
+            const uploadArea = document.getElementById('image-upload-area');
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFile(files[0]);
+                }
+            });
+
+        });
+        
+        // 检查登录状态
+        function checkLogin() {
+            const logged = sessionStorage.getItem('admin_logged_in');
+            if (logged === 'true') {
+                isLoggedIn = true;
+                showAdminPage();
+            }
+        }
+        
+        // 播放提示音
+        function playNotificationSound() {
+            try {
+                // 创建音频上下文
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // 第一声"滴"
+                const oscillator1 = audioContext.createOscillator();
+                const gainNode1 = audioContext.createGain();
+                oscillator1.connect(gainNode1);
+                gainNode1.connect(audioContext.destination);
+                oscillator1.frequency.value = 800;
+                oscillator1.type = 'sine';
+                gainNode1.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode1.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                oscillator1.start(audioContext.currentTime);
+                oscillator1.stop(audioContext.currentTime + 0.15);
+                
+                // 第二声"滴"
+                const oscillator2 = audioContext.createOscillator();
+                const gainNode2 = audioContext.createGain();
+                oscillator2.connect(gainNode2);
+                gainNode2.connect(audioContext.destination);
+                oscillator2.frequency.value = 800;
+                oscillator2.type = 'sine';
+                gainNode2.gain.setValueAtTime(0.3, audioContext.currentTime + 0.2);
+                gainNode2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator2.start(audioContext.currentTime + 0.2);
+                oscillator2.stop(audioContext.currentTime + 0.35);
+                
+                console.log('提示音播放成功');
+            } catch (error) {
+                console.error('播放提示音失败:', error);
+            }
+        }
+        
+        // 显示新订单提醒
+        function showNewOrderNotification(order) {
+            console.log('收到新订单通知:', order);
+            
+            // 自动刷新订单列表（无论用户是否在订单页面）
+            console.log('开始刷新订单列表...');
+            loadOrders().then(() => {
+                console.log('订单列表刷新完成');
+            });
+            
+            // 显示红点
+            document.getElementById('order-notification-badge').style.display = 'inline-block';
+            console.log('红点已显示');
+            
+            // 播放提示音
+            console.log('开始播放提示音...');
+            playNotificationSound();
+            
+            // 弹窗提示
+            if (confirm(`🎉 新订单提醒！\n\n订单号：${order.orderNo}\n金额：¥${order.totalPrice}\n\n是否立即查看？`)) {
+                showTab('orders');
+            }
+        }
+        
+        // 清除通知
+        function clearNotification() {
+            document.getElementById('order-notification-badge').style.display = 'none';
+        }
+        
+        // 启动订单通知监听
+        function startOrderNotification() {
+            if (typeof EventSource !== 'undefined') {
+                console.log('正在连接到订单通知服务...');
+                const eventSource = new EventSource('/api/admin/order-notification');
+                
+                eventSource.onopen = function() {
+                    console.log('SSE连接已建立');
+                };
+                
+                eventSource.addEventListener('connected', function(event) {
+                    console.log('收到连接确认消息:', event.data);
+                });
+                
+                eventSource.addEventListener('new_order', function(event) {
+                    console.log('收到新订单事件:', event.data);
+                    const data = JSON.parse(event.data);
+                    showNewOrderNotification(data.data);
+                });
+                
+                eventSource.onerror = function(error) {
+                    console.error('SSE连接错误:', error);
+                    console.log('5秒后尝试重连...');
+                    eventSource.close();
+                    // 尝试重连
+                    setTimeout(startOrderNotification, 5000);
+                };
+            } else {
+                console.log('您的浏览器不支持SSE，将使用轮询方式');
+            }
+        }
+        
+        // 登录
+        async function login() {
+            const password = document.getElementById('password').value;
+            
+            if (!password) {
+                alert('请输入密码');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    isLoggedIn = true;
+                    sessionStorage.setItem('admin_logged_in', 'true');
+                    showAdminPage();
+                    startOrderNotification();
+                } else {
+                    alert(result.message || '密码错误');
+                }
+            } catch (error) {
+                console.error('登录失败:', error);
+                alert('登录失败，请重试');
+            }
+        }
+        
+        // 退出登录
+        function logout() {
+            isLoggedIn = false;
+            sessionStorage.removeItem('admin_logged_in');
+            document.getElementById('login-page').style.display = 'flex';
+            document.getElementById('admin-page').style.display = 'none';
+            document.getElementById('password').value = '';
+        }
+        
+        // 显示管理页面
+        function showAdminPage() {
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('admin-page').style.display = 'block';
+            loadOrders();
+        }
+        
+        // 切换标签页
+        function showTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('orders-tab').style.display = tab === 'orders' ? 'block' : 'none';
+            document.getElementById('products-tab').style.display = tab === 'products' ? 'block' : 'none';
+            document.getElementById('settings-tab').style.display = tab === 'settings' ? 'block' : 'none';
+            document.getElementById('export-btn').style.display = tab === 'orders' ? 'inline-block' : 'none';
+            
+            if (tab === 'orders') {
+                clearNotification();
+                loadOrders();
+            } else if (tab === 'products') {
+                loadProducts();
+            } else if (tab === 'settings') {
+                loadSettings();
+            }
+        }
+        
+        // 加载公司列表
+        async function loadCompanies() {
+            try {
+                const response = await fetch('/api/companies');
+                const result = await response.json();
+                
+                if (result.success) {
+                    companies = result.data;
+                    const select = document.getElementById('filter-company');
+                    companies.forEach(company => {
+                        const option = document.createElement('option');
+                        option.value = company;
+                        option.textContent = company;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('加载公司列表失败:', error);
+            }
+        }
+        
+        // 加载订单
+        async function loadOrders() {
+            const company = document.getElementById('filter-company').value;
+            const status = document.getElementById('filter-status').value;
+            const startDate = document.getElementById('filter-start-date').value;
+            const endDate = document.getElementById('filter-end-date').value;
+            
+            const params = new URLSearchParams();
+            if (company !== 'all') params.append('company', company);
+            if (status !== 'all') params.append('status', status);
+            if (startDate) params.append('startDate', startDate);
+            if (endDate) params.append('endDate', endDate);
+            
+            try {
+                const response = await fetch(`/api/admin/orders?${params.toString()}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderOrders(result.data);
+                    renderStats(result.data);
+                    console.log('订单数据已更新，订单数量:', result.data.length);
+                    
+                    // 如果当前在订单页面，自动滚动到第一个订单
+                    const ordersTab = document.getElementById('orders-tab');
+                    if (ordersTab.style.display === 'block') {
+                        const firstOrder = document.querySelector('.order-card');
+                        if (firstOrder) {
+                            firstOrder.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            console.log('已滚动到第一个订单');
+                        }
+                    }
+                }
+                return result;
+            } catch (error) {
+                console.error('加载订单失败:', error);
+                throw error;
+            }
+        }
+        
+        // 渲染统计信息
+        function renderStats(orders) {
+            const totalOrders = orders.length;
+            const totalAmount = orders.reduce((sum, o) => sum + o.totalPrice, 0);
+            const pendingCount = orders.filter(o => o.status === '待备货').length;
+            const completedCount = orders.filter(o => o.status === '已完成').length;
+            
+            const container = document.getElementById('stats-container');
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-label">订单总数</div>
+                    <div class="stat-value">${totalOrders}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">总金额</div>
+                    <div class="stat-value">¥${totalAmount.toFixed(2)}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">待备货</div>
+                    <div class="stat-value">${pendingCount}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">已完成</div>
+                    <div class="stat-value">${completedCount}</div>
+                </div>
+            `;
+        }
+        
+        // 渲染订单列表
+        function renderOrders(orders) {
+            const container = document.getElementById('orders-container');
+            
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <div>暂无订单</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            orders.forEach(order => {
+                const statusClass = getStatusClass(order.status);
+                const itemsHtml = order.items.map(item => `
+                    <div class="item-row">
+                        <span>${item.productName}</span>
+                        <span>${item.quantity}份 × ¥${item.price.toFixed(2)} = ¥${item.subtotal.toFixed(2)}</span>
+                    </div>
+                `).join('');
+                
+                html += `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <div class="order-no">订单号: ${order.orderNo}</div>
+                                <div class="order-time">${formatTime(order.createTime)}</div>
+                            </div>
+                            <span class="order-status ${statusClass}">${order.status}</span>
+                        </div>
+                        
+                        <div class="order-info">
+                            <div class="info-item">
+                                <span class="info-label">公司:</span>
+                                <span>${order.company}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">姓名:</span>
+                                <span>${order.name}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">电话:</span>
+                                <span>${order.phone}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">地址:</span>
+                                <span>${order.address}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="order-items">
+                            ${itemsHtml}
+                        </div>
+                        
+                        <div class="order-total">
+                            合计: ¥${order.totalPrice.toFixed(2)}
+                        </div>
+                        
+                        ${order.remark ? `<div style="font-size: 14px; color: #666; margin-bottom: 15px;">备注: ${order.remark}</div>` : ''}
+                        
+                        <div class="order-actions">
+                            <select class="status-select" onchange="updateStatus('${order.id}', this.value)">
+                                <option value="待备货" ${order.status === '待备货' ? 'selected' : ''}>待备货</option>
+                                <option value="已备货" ${order.status === '已备货' ? 'selected' : ''}>已备货</option>
+                                <option value="已配送" ${order.status === '已配送' ? 'selected' : ''}>已配送</option>
+                                <option value="已完成" ${order.status === '已完成' ? 'selected' : ''}>已完成</option>
+                            </select>
+                            <button class="btn btn-danger" onclick="deleteOrder('${order.id}')">删除</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // 获取状态样式类
+        function getStatusClass(status) {
+            const classes = {
+                '待备货': 'status-pending',
+                '已备货': 'status-prepared',
+                '已配送': 'status-delivering',
+                '已完成': 'status-completed'
+            };
+            return classes[status] || 'status-pending';
+        }
+        
+        // 格式化时间
+        function formatTime(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleString('zh-CN');
+        }
+        
+        // 加载设置
+        async function loadSettings() {
+            try {
+                const response = await fetch('/api/admin/settings');
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const settings = result.data;
+                    document.getElementById('min-order-amount').value = settings.minOrderAmount;
+                    document.getElementById('shop-address').value = settings.shopAddress || '';
+                    document.getElementById('shop-phone').value = settings.phone || '';
+                    document.getElementById('business-hours').value = settings.businessHours || '';
+                    
+                    // 加载收款二维码
+                    loadQRCode('wechat', settings.wechatQRCode);
+                    loadQRCode('alipay', settings.alipayQRCode);
+                }
+            } catch (error) {
+                console.error('加载设置失败:', error);
+            }
+        }
+        
+        // 加载二维码
+        function loadQRCode(type, qrCodeUrl) {
+            const imageId = `${type}-qr-image`;
+            const placeholderId = `${type}-qr-placeholder`;
+            const removeBtnId = `remove-${type}-qr`;
+            
+            if (qrCodeUrl) {
+                document.getElementById(imageId).src = qrCodeUrl;
+                document.getElementById(imageId).style.display = 'block';
+                document.getElementById(placeholderId).style.display = 'none';
+                document.getElementById(removeBtnId).style.display = 'inline-block';
+            } else {
+                document.getElementById(imageId).style.display = 'none';
+                document.getElementById(placeholderId).style.display = 'flex';
+                document.getElementById(removeBtnId).style.display = 'none';
+            }
+        }
+        
+        // 处理二维码上传
+        async function handleQRUpload(type, input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            // 验证文件类型
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            if (!validTypes.includes(file.type)) {
+                alert('请上传有效的图片文件（JPG/PNG/GIF）');
+                return;
+            }
+            
+            // 验证文件大小（不超过2MB）
+            if (file.size > 2 * 1024 * 1024) {
+                alert('图片大小不能超过2MB');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('qrFile', file);
+            formData.append('type', type);
+            
+            try {
+                const response = await fetch('/api/admin/upload-qr', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    loadQRCode(type, result.data.url);
+                } else {
+                    alert(result.message || '上传失败');
+                }
+            } catch (error) {
+                console.error('上传失败:', error);
+                alert('上传失败，请重试');
+            }
+            
+            // 重置input
+            input.value = '';
+        }
+        
+        // 删除二维码
+        async function removeQRCode(type) {
+            if (!confirm(`确定要删除${type === 'wechat' ? '微信' : '支付宝'}收款二维码吗？`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/admin/remove-qr', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ type })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    loadQRCode(type, null);
+                } else {
+                    alert(result.message || '删除失败');
+                }
+            } catch (error) {
+                console.error('删除失败:', error);
+                alert('删除失败，请重试');
+            }
+        }
+        
+        // 保存设置
+        async function saveSettings() {
+            const minOrderAmount = parseFloat(document.getElementById('min-order-amount').value);
+            const shopAddress = document.getElementById('shop-address').value.trim();
+            const phone = document.getElementById('shop-phone').value.trim();
+            const businessHours = document.getElementById('business-hours').value.trim();
+            
+            if (isNaN(minOrderAmount) || minOrderAmount < 0) {
+                alert('请输入有效的起送价格（大于等于0）');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/admin/settings', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ minOrderAmount, shopAddress, phone, businessHours })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('设置保存成功');
+                } else {
+                    alert(result.message || '保存失败');
+                }
+            } catch (error) {
+                console.error('保存设置失败:', error);
+                alert('保存失败，请重试');
+            }
+        }
+        
+        // 修改密码
+        async function changePassword() {
+            const oldPassword = document.getElementById('old-password').value.trim();
+            const newPassword = document.getElementById('new-password').value.trim();
+            const confirmPassword = document.getElementById('confirm-password').value.trim();
+            
+            if (!oldPassword) {
+                alert('请输入旧密码');
+                return;
+            }
+            
+            if (!newPassword) {
+                alert('请输入新密码');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                alert('新密码长度不能少于6位');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('两次输入的新密码不一致');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/admin/change-password', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ oldPassword, newPassword })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                    // 清空密码输入框
+                    document.getElementById('old-password').value = '';
+                    document.getElementById('new-password').value = '';
+                    document.getElementById('confirm-password').value = '';
+                } else {
+                    alert(result.message || '修改失败');
+                }
+            } catch (error) {
+                console.error('修改密码失败:', error);
+                alert('修改失败，请重试');
+            }
+        }
+        
+        // 更新订单状态
+        async function updateStatus(orderId, status) {
+            try {
+                const response = await fetch(`/api/admin/orders/${orderId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    loadOrders();
+                } else {
+                    alert(result.message || '更新失败');
+                }
+            } catch (error) {
+                console.error('更新状态失败:', error);
+                alert('更新失败，请重试');
+            }
+        }
+        
+        // 删除订单
+        async function deleteOrder(orderId) {
+            if (!confirm('确定要删除这个订单吗？')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/admin/orders/${orderId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    loadOrders();
+                } else {
+                    alert(result.message || '删除失败');
+                }
+            } catch (error) {
+                console.error('删除订单失败:', error);
+                alert('删除失败，请重试');
+            }
+        }
+        
+        // 导出订单
+        function exportOrders() {
+            const company = document.getElementById('filter-company').value;
+            const status = document.getElementById('filter-status').value;
+            const startDate = document.getElementById('filter-start-date').value;
+            const endDate = document.getElementById('filter-end-date').value;
+            
+            const params = new URLSearchParams();
+            if (company !== 'all') params.append('company', company);
+            if (status !== 'all') params.append('status', status);
+            if (startDate) params.append('startDate', startDate);
+            if (endDate) params.append('endDate', endDate);
+            
+            window.location.href = `/api/admin/orders/export?${params.toString()}`;
+        }
+        
+        // ======== 商品管理 ========
+        
+        // 加载商品列表
+        async function loadProducts() {
+            try {
+                const response = await fetch('/api/products');
+                const result = await response.json();
+                
+                if (result.success) {
+                    products = result.data;
+                    renderProducts();
+                }
+            } catch (error) {
+                console.error('加载商品失败:', error);
+            }
+        }
+        
+        // 渲染商品列表
+        function renderProducts() {
+            const container = document.getElementById('products-container');
+            
+            if (products.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <div>暂无商品</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            products.forEach(product => {
+                const imageSrc = product.image ? product.image : 'https://via.placeholder.com/80x80?text=无图片';
+                html += `
+                    <div class="product-card">
+                        <img src="${imageSrc}" class="product-image" alt="${product.name}">
+                        <div class="product-info">
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-category">分类: ${product.category}</div>
+                            <div class="product-price">¥${product.price.toFixed(2)}</div>
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn btn-primary" onclick="openEditProductModal(${product.id})">编辑</button>
+                            <button class="btn btn-danger" onclick="deleteProduct(${product.id})">删除</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // 打开添加商品弹窗
+        function openAddProductModal() {
+            editingProductId = null;
+            document.getElementById('modal-title').textContent = '添加商品';
+            document.getElementById('product-id').value = '';
+            document.getElementById('product-name').value = '';
+            document.getElementById('product-price').value = '';
+            document.getElementById('product-category').value = '水果';
+            document.getElementById('product-image-url').value = '';
+            document.getElementById('preview-image').style.display = 'none';
+            document.getElementById('remove-image-btn').style.display = 'none';
+            const uploadArea = document.getElementById('image-upload-area');
+            uploadArea.style.display = 'block';
+            resetUploadArea();
+            document.getElementById('product-modal').classList.add('show');
+        }
+        
+        // 打开编辑商品弹窗
+        function openEditProductModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            editingProductId = productId;
+            document.getElementById('modal-title').textContent = '编辑商品';
+            document.getElementById('product-id').value = product.id;
+            document.getElementById('product-name').value = product.name;
+            document.getElementById('product-price').value = product.price;
+            document.getElementById('product-category').value = product.category;
+            document.getElementById('product-image-url').value = product.image || '';
+            
+            const uploadArea = document.getElementById('image-upload-area');
+            
+            if (product.image) {
+                document.getElementById('preview-image').src = product.image;
+                document.getElementById('preview-image').style.display = 'block';
+                document.getElementById('remove-image-btn').style.display = 'inline-block';
+                uploadArea.style.display = 'none';
+            } else {
+                document.getElementById('preview-image').style.display = 'none';
+                document.getElementById('remove-image-btn').style.display = 'none';
+                uploadArea.style.display = 'block';
+                resetUploadArea();
+            }
+            
+            document.getElementById('product-modal').classList.add('show');
+        }
+        
+        // 关闭商品弹窗
+        function closeProductModal() {
+            document.getElementById('product-modal').classList.remove('show');
+        }
+        
+        // 文件选择处理
+        function handleFileSelect(input) {
+            const file = input.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+        
+        // 处理文件上传
+        async function handleFile(file) {
+            // 检查文件类型
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('请选择jpg或png格式的图片');
+                return;
+            }
+            
+            // 检查文件大小 (2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('图片大小不能超过2MB');
+                return;
+            }
+            
+            // 显示上传中状态
+            const uploadArea = document.getElementById('image-upload-area');
+            uploadArea.innerHTML = `
+                <div id="upload-icon">⏳</div>
+                <div id="upload-text">上传中...</div>
+            `;
+            
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+                
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // 上传成功，显示预览
+                    document.getElementById('product-image-url').value = result.url;
+                    document.getElementById('preview-image').src = result.url;
+                    document.getElementById('preview-image').style.display = 'block';
+                    document.getElementById('remove-image-btn').style.display = 'inline-block';
+                    
+                    // 隐藏上传区域
+                    uploadArea.style.display = 'none';
+                } else {
+                    alert(result.message || '上传失败');
+                    resetUploadArea();
+                }
+            } catch (error) {
+                console.error('上传失败:', error);
+                alert('上传失败，请重试');
+                resetUploadArea();
+            }
+        }
+        
+        // 重置上传区域
+        function resetUploadArea() {
+            const uploadArea = document.getElementById('image-upload-area');
+            uploadArea.innerHTML = `
+                <div id="upload-icon">📷</div>
+                <div id="upload-text">点击选择图片或拖拽图片到这里</div>
+                <div id="upload-hint">支持 jpg、png 格式，最大2MB</div>
+            `;
+        }
+        
+        // 打开导入弹窗
+        function openImportModal() {
+            document.getElementById('import-modal').style.display = 'flex';
+            document.getElementById('import-result').style.display = 'none';
+            document.getElementById('excel-upload-area').innerHTML = `
+                <div id="excel-upload-icon">📊</div>
+                <div id="excel-upload-text">点击选择Excel文件或拖拽到这里</div>
+                <div id="excel-upload-hint">支持 .xlsx 和 .xls 格式</div>
+            `;
+        }
+        
+        // 关闭导入弹窗
+        function closeImportModal() {
+            document.getElementById('import-modal').style.display = 'none';
+        }
+        
+        // 下载Excel模板
+        function downloadTemplate() {
+            window.open('/api/admin/download-template', '_blank');
+        }
+        
+        // 处理Excel上传
+        async function handleExcelUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            // 验证文件类型
+            const validExtensions = ['.xlsx', '.xls'];
+            const fileName = file.name.toLowerCase();
+            if (!validExtensions.some(ext => fileName.endsWith(ext))) {
+                alert('请选择Excel文件（.xlsx或.xls格式）');
+                return;
+            }
+            
+            // 显示上传中状态
+            const uploadArea = document.getElementById('excel-upload-area');
+            uploadArea.innerHTML = `
+                <div id="excel-upload-icon">⏳</div>
+                <div id="excel-upload-text">导入中...</div>
+            `;
+            
+            const formData = new FormData();
+            formData.append('excelFile', file);
+            
+            try {
+                const response = await fetch('/api/admin/import-products', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                document.getElementById('import-result').style.display = 'block';
+                
+                if (result.success) {
+                    document.getElementById('import-success').textContent = `✅ 导入成功！成功导入 ${result.data.successCount} 个商品`;
+                    document.getElementById('import-error').textContent = result.data.errorCount > 0 ? `❌ 失败 ${result.data.errorCount} 条记录` : '';
+                    // 刷新商品列表
+                    loadProducts();
+                } else {
+                    document.getElementById('import-success').textContent = '';
+                    document.getElementById('import-error').textContent = result.message;
+                }
+            } catch (error) {
+                console.error('导入失败:', error);
+                document.getElementById('import-result').style.display = 'block';
+                document.getElementById('import-success').textContent = '';
+                document.getElementById('import-error').textContent = '导入失败，请重试';
+            }
+            
+            // 重置上传区域
+            setTimeout(() => {
+                uploadArea.innerHTML = `
+                    <div id="excel-upload-icon">📊</div>
+                    <div id="excel-upload-text">点击选择Excel文件或拖拽到这里</div>
+                    <div id="excel-upload-hint">支持 .xlsx 和 .xls 格式</div>
+                `;
+            }, 2000);
+            
+            // 重置input
+            input.value = '';
+        }
+        
+        // 移除图片
+        function removeImage() {
+            document.getElementById('preview-image').style.display = 'none';
+            document.getElementById('remove-image-btn').style.display = 'none';
+            document.getElementById('product-image-url').value = '';
+            
+            // 显示上传区域
+            const uploadArea = document.getElementById('image-upload-area');
+            uploadArea.style.display = 'block';
+            resetUploadArea();
+        }
+        
+        // 保存商品
+        async function saveProduct() {
+            const form = document.getElementById('product-form');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            const name = document.getElementById('product-name').value;
+            const price = document.getElementById('product-price').value;
+            const category = document.getElementById('product-category').value;
+            const imageUrl = document.getElementById('product-image-url').value.trim();
+            
+            const data = {
+                name,
+                price,
+                category,
+                image: imageUrl
+            };
+            
+            try {
+                let response;
+                if (editingProductId) {
+                    response = await fetch(`/api/admin/products/${editingProductId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    response = await fetch('/api/admin/products', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                    closeProductModal();
+                    loadProducts();
+                } else {
+                    alert(result.message || '保存失败');
+                }
+            } catch (error) {
+                console.error('保存商品失败:', error);
+                alert('保存失败，请重试');
+            }
+        }
+        
+        // 删除商品
+        async function deleteProduct(productId) {
+            if (!confirm('确定要删除这个商品吗？')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/admin/products/${productId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                    loadProducts();
+                } else {
+                    alert(result.message || '删除失败');
+                }
+            } catch (error) {
+                console.error('删除商品失败:', error);
+                alert('删除失败，请重试');
+            }
+        }
+    </script>
+</body>
+</html>
